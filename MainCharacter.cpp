@@ -2,6 +2,9 @@
 
 
 #include "MainCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -53,9 +56,22 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	power -= DeltaTime * power_threshold;
 
-	
+	if (power <= 0)
+	{
+		if(!bDead)
+		{
+			bDead = true;
+
+			GetMesh()->SetSimulatePhysics(true);
+
+			FTimerHandle UnusedHandle;
+			GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMainCharacter::RestartGame, 3.0f, false);
+		}
+	}
+
 }
 
 // Called to bind functionality to input
@@ -104,6 +120,11 @@ void AMainCharacter::MoveRight(float Axis)
 
 // 	}
 // }
+
+void AMainCharacter::RestartGame()
+{
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
 
 void AMainCharacter::OnBeginOverlap(UPrimitiveComponent * HitComp,
 					 	AActor * OtherActor, UPrimitiveComponent * OtherComp,
