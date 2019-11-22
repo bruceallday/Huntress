@@ -132,7 +132,7 @@ void AMainCharacter::OnBeginOverlap(UPrimitiveComponent * HitComp,
 {
 	if(OtherActor->ActorHasTag("Recharge"))
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Collided With"));
+		UE_LOG(LogTemp, Warning, TEXT("Collided With"));
 
 		power += 10.0f;
 
